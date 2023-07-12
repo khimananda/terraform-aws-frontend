@@ -78,4 +78,5 @@ resource "aws_cloudfront_origin_access_identity" "default" {
 
 output "distribution_id" {
   value = aws_cloudfront_distribution.s3_distribution.id
+  Description = "Cloudfront Distribution ID"
 }

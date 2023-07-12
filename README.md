@@ -12,4 +12,4 @@ module "frontend" {
 ```
 
 - This will create Cloudfront, s3
-- Public access for bucket will blocked and only allow from Cloudfront request
+- Public access for bucket will blocked and S3 ACL will support only access from Cloudfront
