@@ -7,6 +7,7 @@ module "frontend" {
 
   bucket_name = <bucket-name> #this will create new bucket
   domain      = <url>
+  alias       = ["domain-1.example.com"]
   certificate = <certificate-arn>
 }
 ```

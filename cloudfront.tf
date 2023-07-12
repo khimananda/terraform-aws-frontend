@@ -4,7 +4,7 @@ locals {
 
 resource "aws_cloudfront_distribution" "s3_distribution" {
   origin {
-    domain_name = aws_s3_bucket.portpro.bucket_regional_domain_name
+    domain_name = aws_s3_bucket.this.bucket_regional_domain_name
     origin_id   = local.s3_origin_id
 
     s3_origin_config {
@@ -31,7 +31,7 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
     response_page_path    = "/index.html"
   }
 
-  aliases = [var.domain]
+  aliases = concat([var.domain], var.alias)
 
   default_cache_behavior {
     allowed_methods  = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
@@ -78,5 +78,5 @@ resource "aws_cloudfront_origin_access_identity" "default" {
 
 output "distribution_id" {
   value = aws_cloudfront_distribution.s3_distribution.id
-  Description = "Cloudfront Distribution ID"
+  description = "Cloudfront Distribution ID"
 }
