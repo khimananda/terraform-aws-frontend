@@ -75,8 +75,3 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
 resource "aws_cloudfront_origin_access_identity" "default" {
   comment = "cloudfront origin access identity"
 }
-
-output "distribution_id" {
-  value = aws_cloudfront_distribution.s3_distribution.id
-  description = "Cloudfront Distribution ID"
-}
