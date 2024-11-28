@@ -1,21 +1,24 @@
 variable "bucket_name" {
-  type = string
+  type        = string
   description = "Bucket Name that will hold your Static html content i.e react build file"
 }
 
 variable "domain" {
-  type = string
-  description =  "URL, This will be used as alias in cloudfront"
+  type        = string
+  description = "URL, This will be used as alias in cloudfront"
 }
 
 variable "certificate" {
-  type = string
+  type        = string
   description = "Certificate ARN, form ACM"
 }
 
 variable "alias" {
-  type = list
-  default = []
-  description = "Cloudfront alias"  
+  type        = list(any)
+  default     = []
+  description = "Cloudfront alias"
 }
 
+variable "waf_frontend_arn" {
+  type = string
+}

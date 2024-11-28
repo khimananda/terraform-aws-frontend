@@ -29,6 +29,6 @@ resource "aws_s3_bucket_policy" "allow-cloudfront" {
 }
 
 output "bucket" {
-  value = aws_s3_bucket.this.bucket
+  value       = aws_s3_bucket.this.bucket
   description = "Name of the Bucket"
 }

@@ -2,6 +2,17 @@ locals {
   s3_origin_id = var.domain
 }
 
+resource "aws_cloudfront_response_headers_policy" "security_headers_policy" {
+  name = "security-headers-policy"
+
+  security_headers_config {
+    frame_options {
+      frame_option = "SAMEORIGIN"
+      override     = true
+    }
+  }
+}
+
 resource "aws_cloudfront_distribution" "s3_distribution" {
   origin {
     domain_name = aws_s3_bucket.this.bucket_regional_domain_name
@@ -31,7 +42,9 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
     response_page_path    = "/index.html"
   }
 
-  aliases = concat([var.domain], var.alias)
+  aliases    = concat([var.domain], var.alias)
+  web_acl_id = var.waf_frontend_arn
+
 
   default_cache_behavior {
     allowed_methods  = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
@@ -50,7 +63,7 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
     min_ttl                = 0
     default_ttl            = 3600
     max_ttl                = 86400
-    compress = true
+    compress               = true
   }
 
   price_class = "PriceClass_All"
@@ -67,8 +80,8 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
   }
 
   viewer_certificate {
-    ssl_support_method  = "sni-only"
-    acm_certificate_arn = var.certificate
+    ssl_support_method       = "sni-only"
+    acm_certificate_arn      = var.certificate
     minimum_protocol_version = "TLSv1.2_2021"
   }
 }
