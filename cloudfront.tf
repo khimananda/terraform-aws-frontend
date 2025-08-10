@@ -2,6 +2,17 @@ locals {
   s3_origin_id = var.domain
 }
 
+resource "aws_cloudfront_response_headers_policy" "security_headers_policy" {
+  name = "security-headers-policy"
+
+  security_headers_config {
+    frame_options {
+      frame_option = "SAMEORIGIN"
+      override     = true
+    }
+  }
+}
+
 resource "aws_cloudfront_distribution" "s3_distribution" {
   origin {
     domain_name              = aws_s3_bucket.this.bucket_regional_domain_name
