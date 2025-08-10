@@ -17,8 +17,35 @@ data "aws_iam_policy_document" "s3_policy" {
     resources = ["${aws_s3_bucket.this.arn}/*"]
 
     principals {
-      type        = "AWS"
-      identifiers = [aws_cloudfront_origin_access_identity.default.iam_arn]
+      type        = "Service"
+      identifiers = ["cloudfront.amazonaws.com"]
+    }
+
+    condition {
+      test     = "StringEquals"
+      variable = "AWS:SourceArn"
+      values   = [aws_cloudfront_distribution.s3_distribution.arn]
+    }
+  }
+
+  statement {
+    sid       = "AllowSSLRequestsOnly"
+    actions   = ["s3:*"]
+    effect    = "Deny"
+    resources = [
+      aws_s3_bucket.this.arn,
+      "${aws_s3_bucket.this.arn}/*"
+    ]
+
+    condition {
+      test     = "Bool"
+      variable = "aws:SecureTransport"
+      values   = ["false"]
+    }
+
+    principals {
+      type        = "*"
+      identifiers = ["*"]
     }
   }
 }
@@ -29,6 +56,6 @@ resource "aws_s3_bucket_policy" "allow-cloudfront" {
 }
 
 output "bucket" {
-  value = aws_s3_bucket.this.bucket
+  value       = aws_s3_bucket.this.bucket
   description = "Name of the Bucket"
 }
