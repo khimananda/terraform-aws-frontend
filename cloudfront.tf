@@ -3,7 +3,8 @@ locals {
 }
 
 resource "aws_cloudfront_response_headers_policy" "security_headers_policy" {
-  name = "security-headers-policy"
+  count = var.response_headers_policy_id == null ? 1 : 0
+  name  = "${var.domain}-security-headers-policy"
 
   security_headers_config {
     frame_options {
@@ -56,14 +57,14 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
       }
     }
 
-    viewer_protocol_policy = "redirect-to-https"
-    min_ttl                = 0
-    default_ttl            = 3600
-    max_ttl                = 86400
-    compress               = true
-    response_headers_policy_id = var.response_headers_policy_id
+    viewer_protocol_policy     = "redirect-to-https"
+    min_ttl                    = 0
+    default_ttl                = 3600
+    max_ttl                    = 86400
+    compress                   = true
+    response_headers_policy_id = var.response_headers_policy_id != null ? var.response_headers_policy_id : aws_cloudfront_response_headers_policy.security_headers_policy[0].id
   }
-   
+
   price_class = "PriceClass_All"
 
   restrictions {
